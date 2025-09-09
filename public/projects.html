@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Projects Table</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #666;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <h2>Projects</h2>
+  <table id="projects-table">
+    <thead>
+      <tr>
+        <th>Project ID</th>
+        <th>Project Name</th>
+        <th>Client Name</th>
+        <th>Project Manager</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Budget</th>
+        <th>Status</th>
+        <th>Priority</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows will be added here -->
+    </tbody>
+  </table>
+
+  <script>
+    async function loadProjects() {
+      try {
+        const response = await fetch('http://localhost:5000/api/projects');
+        const projects = await response.json();
+
+        const tbody = document.querySelector('#projects-table tbody');
+        tbody.innerHTML = ''; // Clear existing rows
+
+        projects.forEach(project => {
+          const tr = document.createElement('tr');
+
+          tr.innerHTML = `
+            <td>${project.project_id}</td>
+            <td>${project.project_name}</td>
+            <td>${project.client_name}</td>
+            <td>${project.project_manager}</td>
+            <td>${new Date(project.start_date).toLocaleDateString()}</td>
+            <td>${new Date(project.end_date).toLocaleDateString()}</td>
+            <td>$${Number(project.budget).toLocaleString()}</td>
+            <td>${project.status}</td>
+            <td>${project.priority}</td>
+          `;
+
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error('Error loading projects:', error);
+      }
+    }
+
+    loadProjects();
+  </script>
+</body>
+</html>
